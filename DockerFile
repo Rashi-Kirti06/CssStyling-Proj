@@ -1,2 +1,580 @@
 FROM nginx:alpine
 COPY . /usr/share/nginx/html
+
+
+1.	from collections import deque
+print("1.Missionaries and cannibals problem using BFS Algorithm.")
+print("Name: Kirti Tripathi")
+print("Register Number: 23MIS0043")
+
+def safe(state):
+    Lm, Lc, Rm, Rc, boat_side = state
+    if min(Lm, Lc, Rm, Rc) < 0:
+        return False
+
+    if (Lm != 0 and Lc > Lm) or (Rm != 0 and Rc > Rm):
+        return False
+
+    return True
+
+def bfs_mc():
+    start_state = (3, 3, 0, 0, 0)
+    end_state = (0, 0, 3, 3, 1)
+
+    q = deque()
+    q.append((start_state, []))
+    explored = set()
+
+    transitions = [(1,0), (0,1), (2,0), (0,2), (1,1)]
+
+    while q:
+        current, history = q.popleft()
+
+        if current == end_state:
+            return history + [current]
+
+        if current in explored:
+            continue
+
+        explored.add(current)
+
+        Lm, Lc, Rm, Rc, boat_side = current
+
+        for m, c in transitions:
+            if boat_side == 0:
+                nxt = (Lm-m, Lc-c, Rm+m, Rc+c, 1)
+            else:
+                nxt = (Lm+m, Lc+c, Rm-m, Rc-c, 0)
+
+            if safe(nxt):
+                q.append((nxt, history + [current]))
+path = bfs_mc()
+
+print("Solution Path:")
+for p in path:
+    print(p)
+2.	from collections import deque
+
+print("2. Water Jug Problem using BFS Algorithm ")
+print("Name:Kirti Tripathi ")
+print("Register Number: 23MIS0043")
+
+def water_jug_bfs():
+    J1, J2 = 4, 3
+    target = 2
+
+    q = deque([((0, 0), [])])
+    seen = set()
+
+    while q:
+        (x, y), trace = q.popleft()
+
+        if x == target or y == target:
+            return trace + [(x, y)]
+
+        if (x, y) in seen:
+            continue
+
+        seen.add((x, y))
+
+        possibilities = [
+            (J1, y),
+            (x, J2),
+            (0, y),
+            (x, 0),
+            (x - min(x, J2 - y), y + min(x, J2 - y)),
+            (x + min(y, J1 - x), y - min(y, J1 - x))
+        ]
+
+        for nxt in possibilities:
+            if nxt not in seen:
+                q.append((nxt, trace + [(x, y)]))
+
+answer = water_jug_bfs()
+
+print("Solution Path:")
+for step in answer:
+    print(step)
+
+
+3.	print("3. Missionaries and cannibals problem using DFS Algorithm")
+print("Name: Kirti Tripathi")
+print("Register Number: 23MIS0043")
+
+def valid_move(state):
+    a, b, c, d, side = state
+
+    if a < 0 or b < 0 or c < 0 or d < 0:
+        return False
+
+    if (a != 0 and b > a) or (c != 0 and d > c):
+        return False
+
+    return True
+
+def dfs_mc(current, destination, visited, result):
+    if current == destination:
+        return result + [current]
+
+    visited.add(current)
+
+    a, b, c, d, side = current
+    actions = [(1,0), (0,1), (2,0), (0,2), (1,1)]
+
+    for m, n in actions:
+        if side == 0:
+            next_step = (a-m, b-n, c+m, d+n, 1)
+        else:
+            next_step = (a+m, b+n, c-m, d-n, 0)
+
+        if valid_move(next_step) and next_step not in visited:
+            sol = dfs_mc(next_step, destination, visited, result + [current])
+            if sol:
+                return sol
+
+    return None
+
+start = (3, 3, 0, 0, 0)
+end = (0, 0, 3, 3, 1)
+
+final_path = dfs_mc(start, end, set(), [])
+
+print("Solution Path:")
+for s in final_path:
+    print(s)
+
+
+4.	import itertools
+
+def chk(m,w1,w2,res):
+    def to_num(w): return int("".join(str(m[ch]) for ch in w))
+    return to_num(w1)+to_num(w2)==to_num(res)
+
+def solve(w1,w2,res):
+    l=set(w1+w2+res)
+    if len(l)>10: return None
+    l=list(l)
+    for p in itertools.permutations(range(10),len(l)):
+        m=dict(zip(l,p))
+        if m[w1[0]]==0 or m[w2[0]]==0 or m[res[0]]==0: continue
+        if chk(m,w1,w2,res): return m
+    return None
+
+if __name__=="__main__":
+    w1,w2,res="SEND","MORE","MONEY"
+    s=solve(w1,w2,res)
+    print("Name: KIRTI TRIPATHI")
+    print("Register Number: 23MIS0043")
+    print(f"{w1}+{w2}={res}")
+    if s: 
+        for k,v in s.items(): print(k,"=",v)
+    else: print("No solution")
+
+
+5.	print("Cryptarithmetic Problem using CSP with Backtracking")
+print("Name: Kirti Tripathi")
+print("Register Number: 23MIS0043")
+print("Cryptarithmetic Problem: SEND + MORE = MONEY\n")
+
+letters = ['S','E','N','D','M','O','R','Y']
+digits = range(10)
+
+def solve(assignments, used_digits):
+    
+    if len(assignments) == len(letters):
+
+        S = assignments['S']
+        E = assignments['E']
+        N = assignments['N']
+        D = assignments['D']
+        M = assignments['M']
+        O = assignments['O']
+        R = assignments['R']
+        Y = assignments['Y']
+
+        send = S*1000 + E*100 + N*10 + D
+        more = M*1000 + O*100 + R*10 + E
+        money = M*10000 + O*1000 + N*100 + E*10 + Y
+
+        if send + more == money:
+            print("Solution Found:\n")
+            print("S =", S)
+            print("E =", E)
+            print("N =", N)
+            print("D =", D)
+            print("M =", M)
+            print("O =", O)
+            print("R =", R)
+            print("Y =", Y)
+            print("\nSEND =", send)
+            print("MORE =", more)
+            print("MONEY =", money)
+            return True
+
+        return False
+    
+    var = letters[len(assignments)]
+    
+    for digit in digits:
+        
+        if digit in used_digits:
+            continue
+        
+        if var in ['S','M'] and digit == 0:
+            continue
+
+        assignments[var] = digit
+        used_digits.add(digit)
+        
+        if solve(assignments, used_digits):
+            return True
+        
+        del assignments[var]
+        used_digits.remove(digit)
+
+    return False
+
+solve({}, set())
+
+
+6.	print("Name: Kirti Tripathi")
+print("Registration No: 23MIS0043")
+
+# Depth Limited Search
+
+def dls(graph, node, goal, depth, visited):
+    if depth < 0:
+        return False
+    
+    print("Visiting:", node)
+    
+    if node == goal:
+        return True
+    
+    visited.add(node)
+    
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            if dls(graph, neighbor, goal, depth - 1, visited):
+                return True
+    
+    return False
+
+
+# Graph representation
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+start = 'A'
+goal = 'E'
+depth_limit = 2
+
+visited = set()
+
+if dls(graph, start, goal, depth_limit, visited):
+    print("Goal Found")
+else:
+    print("Goal Not Found")
+
+
+7.	print("Name: Kirti Tripathi")
+print("Registration No: 23MIS0043")
+
+# IDDS
+
+def dls(graph, node, goal, depth):
+    if depth == 0 and node == goal:
+        return True
+    if depth > 0:
+        for neighbor in graph[node]:
+            if dls(graph, neighbor, goal, depth - 1):
+                return True
+    return False
+
+
+def idds(graph, start, goal, max_depth):
+    for depth in range(max_depth + 1):
+        print("Searching at depth:", depth)
+        if dls(graph, start, goal, depth):
+            return True
+    return False
+
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+if idds(graph, 'A', 'E', 5):
+    print("Goal Found")
+else:
+    print("Goal Not Found")
+
+
+8.	print("Name: Kirti Tripathi")
+print("Registration No: 23MIS0043")
+
+import heapq
+
+def ucs(graph, start, goal):
+    priority_queue = [(0, start)]
+    visited = set()
+
+    while priority_queue:
+        cost, node = heapq.heappop(priority_queue)
+
+        if node in visited:
+            continue
+
+        print("Visiting:", node, "Cost:", cost)
+
+        if node == goal:
+            return cost
+
+        visited.add(node)
+
+        for neighbor, weight in graph[node]:
+            if neighbor not in visited:
+                heapq.heappush(priority_queue, (cost + weight, neighbor))
+
+    return float('inf')
+
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2), ('E', 5)],
+    'C': [('F', 1)],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+result = ucs(graph, 'A', 'E')
+print("Minimum Cost to reach goal:", result)
+
+
+9.	print("Name: Kirti Tripathi")
+print("Registration No: 23MIS0043")
+
+def alpha_beta(depth, nodeIndex, maximizingPlayer, values, alpha, beta):
+    if depth == 3:
+        return values[nodeIndex]
+
+    if maximizingPlayer:
+        best = -float('inf')
+
+        for i in range(2):
+            val = alpha_beta(depth + 1, nodeIndex * 2 + i,
+                             False, values, alpha, beta)
+            best = max(best, val)
+            alpha = max(alpha, best)
+
+            if beta <= alpha:
+                break
+
+        return best
+
+    else:
+        best = float('inf')
+
+        for i in range(2):
+            val = alpha_beta(depth + 1, nodeIndex * 2 + i,
+                             True, values, alpha, beta)
+            best = min(best, val)
+            beta = min(beta, best)
+
+            if beta <= alpha:
+                break
+
+        return best
+
+
+values = [3, 5, 6, 9, 1, 2, 0, -1]
+
+result = alpha_beta(0, 0, True, values, -float('inf'), float('inf'))
+
+print("Optimal Value:", result)
+
+
+10.	print("Name: Kirti Tripathi")
+print("Registration No: 23MIS0043")
+
+# Function to check if it's safe to place a queen
+def is_safe(board, row, col):
+    for i in range(row):
+        # Check same column or diagonal
+        if board[i] == col or abs(board[i] - col) == abs(i - row):
+            return False
+    return True
+
+
+# N-Queens using Backtracking
+def nqueens(n):
+    def backtrack(row):
+        if row == n:
+            solutions.append(board[:])
+            return
+        
+        for col in range(n):
+            if is_safe(board, row, col):
+                board[row] = col
+                backtrack(row + 1)
+                board[row] = -1  # backtrack
+
+    board = [-1] * n
+    solutions = []
+
+    backtrack(0)
+    return solutions
+
+
+# Input
+n = int(input("Enter value of N: "))
+
+# Solve
+solve = nqueens(n)
+
+# Output
+print("Total Solutions:", len(solve))
+
+for sol in solve:
+    for i in range(n):
+        row = ['.'] * n
+        row[sol[i]] = 'Q'
+        print(" ".join(row))
+    print()
+
+
+11.	def dfs(graph, node, visited):
+    if node not in visited:
+        print(node, end=" ")
+        visited.add(node)
+        for neighbor in graph[node]:
+            dfs(graph, neighbor, visited)
+
+# Example Graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
+
+visited = set()
+dfs(graph, 'A', visited)
+
+
+12.	def dfs_search(graph, node, target, visited):
+    if node == target:
+        return True
+    
+    visited.add(node)
+    
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            if dfs_search(graph, neighbor, target, visited):
+                return True
+    return False
+
+# Usage
+visited = set()
+print(dfs_search(graph, 'A', 'F', visited))  # True or False
+
+
+13. from collections import deque
+
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    
+    while queue:
+        node = queue.popleft()
+        
+        if node not in visited:
+            print(node, end=" ")
+            visited.add(node)
+            for neighbor in graph[node]:
+                queue.append(neighbor)
+                
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}                
+
+# Usage
+bfs(graph, 'A')
+
+
+14. from collections import deque
+
+def bfs_search(graph, start, target):
+    visited = set()
+    queue = deque([start])
+    
+    while queue:
+        node = queue.popleft()
+        
+        if node == target:
+            return True
+        
+        if node not in visited:
+            visited.add(node)
+            for neighbor in graph[node]:
+                queue.append(neighbor)
+    
+    return False
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}  
+
+# Usage
+print(bfs_search(graph, 'A', 'F'))  # True or False
+
+
+15.	from collections import deque
+
+def bfs_shortest_path(graph, start, goal):
+    visited = set()
+    queue = deque([[start]])
+    
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+        
+        if node == goal:
+            return path
+        
+        if node not in visited:
+            visited.add(node)
+            
+            for neighbor in graph[node]:
+                new_path = list(path)
+                new_path.append(neighbor)
+                queue.append(new_path)
+    
+    return None
+
+# Usage
+print(bfs_shortest_path(graph, 'A', 'F'))
